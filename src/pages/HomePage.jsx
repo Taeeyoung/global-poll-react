@@ -7,7 +7,7 @@ const TOTAL = LEADERS.length;
 
 export default function HomePage({ showToast }) {
   const { getEval, setActiveSheet } = useApp();
-  const [showLoader, setShowLoader] = useState(false);
+  const [loaderState, setLoaderState] = useState('hidden'); // 'hidden' | 'in' | 'out'
   const sentinelRef = useRef(null);
 
   const doneCount = LEADERS.filter(l => !!getEval(l.id)).length;
@@ -16,15 +16,25 @@ export default function HomePage({ showToast }) {
   useEffect(() => {
     const el = sentinelRef.current;
     if (!el) return;
-    let timer;
+    let inTimer, outTimer;
+
     const observer = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) {
-        setShowLoader(true);
-        timer = setTimeout(() => setShowLoader(false), 1500);
+        clearTimeout(outTimer);
+        setLoaderState('in');
+        // 2초 후 fade-out 시작
+        inTimer = setTimeout(() => {
+          setLoaderState('out');
+          // fade-out 애니메이션 끝나면 hidden
+          outTimer = setTimeout(() => setLoaderState('hidden'), 600);
+        }, 2000);
+      } else {
+        clearTimeout(inTimer);
       }
     }, { threshold: 0.1 });
+
     observer.observe(el);
-    return () => { observer.disconnect(); clearTimeout(timer); };
+    return () => { observer.disconnect(); clearTimeout(inTimer); clearTimeout(outTimer); };
   }, []);
 
   return (
@@ -49,16 +59,10 @@ export default function HomePage({ showToast }) {
         ))}
       </div>
 
-      {/* 스크롤 감지 센티널 */}
-      <div ref={sentinelRef} className="home-loader">
-        {showLoader && (
-          <>
-            <div className="home-loader-spinner" />
-            <p className="home-loader-text">더 많은 지도자가 추가될 예정입니다</p>
-          </>
-        )}
+      <div ref={sentinelRef} className={`home-loader home-loader-${loaderState}`}>
+        <div className="home-loader-spinner" />
+        <p className="home-loader-text">더 많은 지도자가 추가될 예정입니다</p>
       </div>
     </div>
   );
 }
-

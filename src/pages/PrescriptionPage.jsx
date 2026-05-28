@@ -49,6 +49,7 @@ function RxPaper({ leader, evalOpt, reasons, topFactor, pills, comment, onRewrit
   const selectedPills = PILLS.filter(p => pills.includes(p.id));
 
   return (
+    <>
     <div className="rx-paper">
       <div className="rx-paper-header">
         {portrait && <div className="rx-paper-portrait" dangerouslySetInnerHTML={{ __html: portrait }} />}
@@ -63,8 +64,19 @@ function RxPaper({ leader, evalOpt, reasons, topFactor, pills, comment, onRewrit
           <div className="rx-paper-meta-row"><span className="rx-paper-meta-label">대상</span><span className="rx-paper-meta-val">{tName(leader.id)} · {tTitle(leader.id)}</span></div>
           <div className="rx-paper-meta-row"><span className="rx-paper-meta-label">평가</span><span className="rx-paper-meta-val">{evalOpt}</span></div>
           <div className="rx-paper-meta-row"><span className="rx-paper-meta-label">핵심 요인</span><span className="rx-paper-meta-val">{topFactor}</span></div>
-          {user?.name && <div className="rx-paper-meta-row"><span className="rx-paper-meta-label">처방자</span><span className="rx-paper-meta-val">{user.name}</span></div>}
+          {comment && comment.length <= 10 && (
+            <div className="rx-paper-meta-row">
+              <span className="rx-paper-meta-label">처방 소견</span>
+              <span className="rx-paper-meta-val">{comment}</span>
+            </div>
+          )}
         </div>
+        {comment && comment.length > 10 && (
+          <div className="rx-paper-opinion">
+            <div className="rx-paper-opinion-label">💬 처방 소견 한마디</div>
+            <p className="rx-paper-opinion-text">{comment}</p>
+          </div>
+        )}
         {selectedPills.length > 0 && (<>
           <div className="rx-paper-pills-title">처방 알약</div>
           <div className="rx-paper-pills">
@@ -76,7 +88,6 @@ function RxPaper({ leader, evalOpt, reasons, topFactor, pills, comment, onRewrit
             ))}
           </div>
         </>)}
-        {comment && <div className="rx-paper-comment">💬 {comment}</div>}
         <div className="rx-paper-warning">
           <span className="rx-paper-warning-icon">⚠️</span>
           이 처방전은 시민 의견 표현을 위한 상징적 도구입니다. <b>실제 외교 효과를 보장하지 않습니다.</b>
@@ -86,8 +97,9 @@ function RxPaper({ leader, evalOpt, reasons, topFactor, pills, comment, onRewrit
         <span className="rx-paper-footer-brand">🌍 Global Poll</span>
         <div className="rx-paper-footer-stamp">🌐</div>
       </div>
-      <button className="rx-rewrite-btn" style={{ margin: '12px 16px 16px' }} onClick={onRewrite}>✏️ 처방전 수정하기</button>
     </div>
+    <button className="rx-rewrite-btn" style={{ marginTop: 12 }} onClick={onRewrite}>✏️ 처방전 수정하기</button>
+    </>
   );
 }
 

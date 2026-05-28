@@ -50,7 +50,7 @@ function EvalSection({ leader, showToast }) {
 
   if (!open) {
     return (
-      <div className="sheet-section">
+      <div className="sheet-section eval">
         <div className="sheet-section-title">🌡️ {t('eval_title')}</div>
         <div style={{ marginBottom: 10 }}>
           <TempRow label={t('peace_lbl')} val={ev?.peace ?? 0} type="peace" />
@@ -67,7 +67,7 @@ function EvalSection({ leader, showToast }) {
   }
 
   return (
-    <div className="sheet-section">
+    <div className="sheet-section eval">
       <div className="sheet-section-title">🌡️ {t('eval_title')}</div>
       <div className="eval-range-group">
         <div>
@@ -98,7 +98,7 @@ function RxCTA({ leader, onGoToRx }) {
   const { t, getRx } = useApp();
   const done = !!getRx(leader.id);
   return (
-    <div className="sheet-section">
+    <div className="sheet-section rx">
       <div className="sheet-section-title">{t('rx_title')}</div>
       <div className="rx-cta">
         <div className="rx-cta-header">

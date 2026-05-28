@@ -1,11 +1,12 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { useApp } from './context/AppContext.jsx';
 import LoginScreen from './components/LoginScreen.jsx';
 import Header from './components/Header.jsx';
 import BottomNav from './components/BottomNav.jsx';
-import LanguageSelector from './components/LanguageSelector.jsx';
 import Sheet from './components/Sheet.jsx';
 import TendencyModal from './components/TendencyModal.jsx';
+import WelcomeModal from './components/WelcomeModal.jsx';
+import TourTooltip from './components/TourTooltip.jsx';
 import HomePage from './pages/HomePage.jsx';
 import PrescriptionPage from './pages/PrescriptionPage.jsx';
 import StatsPage from './pages/StatsPage.jsx';
@@ -22,10 +23,20 @@ function Toast({ toasts }) {
 }
 
 export default function App() {
-  const { user, logout, t, activeSheet, setActiveSheet, setRxLeader } = useApp();
+  const { user, activeSheet, setActiveSheet, setRxLeader } = useApp();
   const [tab, setTab] = useState('home');
   const [toasts, setToasts] = useState([]);
   const [showTendency, setShowTendency] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(false);
+  const [showTour, setShowTour] = useState(false);
+  const prevUser = useRef(null);
+
+  useEffect(() => {
+    if (!prevUser.current && user) {
+      setShowWelcome(true);
+    }
+    prevUser.current = user;
+  }, [user]);
 
   const showToast = useCallback((msg, duration = 2200) => {
     const id = Date.now() + Math.random();
@@ -50,9 +61,6 @@ export default function App() {
     <div className="app-layout">
       <Header />
 
-      <LanguageSelector />
-      <button className="logout-btn" onClick={logout}>{t('logout_btn')}</button>
-
       <main className="page">
         {tab === 'home' && <HomePage showToast={showToast} />}
         {tab === 'rx' && <PrescriptionPage showToast={showToast} />}
@@ -71,6 +79,8 @@ export default function App() {
         />
       )}
 
+      {showWelcome && <WelcomeModal onClose={() => { setShowWelcome(false); setShowTour(true); }} />}
+      {showTour && <TourTooltip onDone={() => setShowTour(false)} />}
       {showTendency && <TendencyModal onClose={() => setShowTendency(false)} />}
 
       <Toast toasts={toasts} />

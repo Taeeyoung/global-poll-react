@@ -4,15 +4,11 @@ import { LEADERS } from '../data/leaders.js';
 const TOTAL = LEADERS.length;
 
 export default function ProfilePage({ showToast, setTab, onTendency }) {
-  const { t, tName, tTitle, user, logout, getEval, getRx, clearAll, evals } = useApp();
+  const { t, user, logout, getEval, clearAll } = useApp();
 
   const doneCount = LEADERS.filter(l => !!getEval(l.id)).length;
   const canTendency = doneCount >= 3;
   const completionPct = TOTAL > 0 ? Math.round((doneCount / TOTAL) * 100) : 0;
-
-  const history = LEADERS
-    .filter(l => !!getRx(l.id))
-    .map(l => ({ leader: l, rx: getRx(l.id), ev: getEval(l.id) }));
 
   const handleReset = () => {
     if (window.confirm('모든 처방전과 평가를 초기화할까요?')) {
@@ -45,28 +41,6 @@ export default function ProfilePage({ showToast, setTab, onTendency }) {
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Prescription history */}
-      <div className="profile-section-title">{t('prof_hist')}</div>
-      <div className="profile-hist">
-        {history.length === 0 ? (
-          <div className="profile-empty">{t('prof_empty')}</div>
-        ) : (
-          history.map(item => (
-            <div key={item.leader.id} className="profile-hist-item">
-              <span className="profile-hist-emoji">{item.leader.emoji}</span>
-              <div className="profile-hist-info">
-                <div className="profile-hist-name">{tName(item.leader.id)}</div>
-                <div className="profile-hist-eval">
-                  {tTitle(item.leader.id)}
-                  {item.rx?.evalOpt && ` · ${item.rx.evalOpt}`}
-                </div>
-              </div>
-              <span className="profile-hist-badge">{t('rx_done')}</span>
-            </div>
-          ))
-        )}
       </div>
 
       {/* 성향 리포트 */}

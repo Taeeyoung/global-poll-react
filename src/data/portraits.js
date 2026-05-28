@@ -1,7 +1,7 @@
 const S = '<svg viewBox="0 0 120 160" xmlns="http://www.w3.org/2000/svg">';
 const E = '</svg>';
 
-const bg   = c => `<rect width="120" height="160" fill="${c}"/>`;
+const bg   = () => '';
 const suit = c => `<path d="M0 160 L0 118 L38 106 L60 121 L82 106 L120 118 L120 160Z" fill="${c}"/>`;
 const shirt  = () => '<polygon points="54,108 66,108 64,136 56,136" fill="#FFF"/>';
 const tie    = c => `<polygon points="58,108 62,108 64,130 60,134 56,130" fill="${c}"/>`;

@@ -1,3 +1,21 @@
+export const GLOW_COLOR = {
+  trump:     'rgba(60,59,110,.55)',
+  putin:     'rgba(213,43,30,.45)',
+  zelensky:  'rgba(0,91,187,.5)',
+  xi:        'rgba(222,41,16,.5)',
+  lee:       'rgba(0,52,120,.5)',
+  ishiba:    'rgba(188,0,45,.45)',
+  macron:    'rgba(0,35,149,.5)',
+  modi:      'rgba(255,153,51,.4)',
+  netanyahu: 'rgba(0,56,184,.5)',
+  erdogan:   'rgba(227,10,23,.45)',
+  guterres:  'rgba(75,156,211,.45)',
+  pope:      'rgba(255,224,0,.35)',
+  mbs:       'rgba(0,108,53,.45)',
+  khamenei:  'rgba(35,159,64,.45)',
+  kim:       'rgba(218,0,0,.45)',
+};
+
 export const FLAG_BG = {
   trump:     'linear-gradient(180deg,#B22234 33%,#fff 33%,#fff 66%,#3C3B6E 66%)',
   putin:     'linear-gradient(180deg,#fff 33%,#0039A6 33%,#0039A6 66%,#D52B1E 66%)',

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useApp } from '../context/AppContext.jsx';
 
 const TABS = [
@@ -9,6 +10,13 @@ const TABS = [
 
 export default function BottomNav({ tab, setTab }) {
   const { t } = useApp();
+  const [bouncing, setBouncing] = useState(null);
+
+  const handleClick = (id) => {
+    setBouncing(id);
+    setTimeout(() => setBouncing(null), 320);
+    setTab(id);
+  };
 
   return (
     <nav className="bnav">
@@ -16,9 +24,11 @@ export default function BottomNav({ tab, setTab }) {
         <button
           key={item.id}
           className={`bnav-item${tab === item.id ? ' active' : ''}`}
-          onClick={() => setTab(item.id)}
+          onClick={() => handleClick(item.id)}
         >
-          <span className="bnav-item-icon">{item.icon}</span>
+          <span className={`bnav-item-icon${bouncing === item.id ? ' bounce' : ''}`}>
+            {item.icon}
+          </span>
           <span className="bnav-item-label">
             {t(item.labelKey).replace(/^[^\s]+\s/, '')}
           </span>
