@@ -5,6 +5,7 @@ import Header from './components/Header.jsx';
 import BottomNav from './components/BottomNav.jsx';
 import LanguageSelector from './components/LanguageSelector.jsx';
 import Sheet from './components/Sheet.jsx';
+import TendencyModal from './components/TendencyModal.jsx';
 import HomePage from './pages/HomePage.jsx';
 import PrescriptionPage from './pages/PrescriptionPage.jsx';
 import StatsPage from './pages/StatsPage.jsx';
@@ -24,6 +25,7 @@ export default function App() {
   const { user, logout, t, activeSheet, setActiveSheet, setRxLeader } = useApp();
   const [tab, setTab] = useState('home');
   const [toasts, setToasts] = useState([]);
+  const [showTendency, setShowTendency] = useState(false);
 
   const showToast = useCallback((msg, duration = 2200) => {
     const id = Date.now() + Math.random();
@@ -55,7 +57,7 @@ export default function App() {
         {tab === 'home' && <HomePage showToast={showToast} />}
         {tab === 'rx' && <PrescriptionPage showToast={showToast} />}
         {tab === 'stats' && <StatsPage />}
-        {tab === 'profile' && <ProfilePage showToast={showToast} setTab={setTab} />}
+        {tab === 'profile' && <ProfilePage showToast={showToast} setTab={setTab} onTendency={() => setShowTendency(true)} />}
       </main>
 
       <BottomNav tab={tab} setTab={setTab} />
@@ -68,6 +70,8 @@ export default function App() {
           showToast={showToast}
         />
       )}
+
+      {showTendency && <TendencyModal onClose={() => setShowTendency(false)} />}
 
       <Toast toasts={toasts} />
     </div>

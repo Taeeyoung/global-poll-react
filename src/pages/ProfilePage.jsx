@@ -3,10 +3,11 @@ import { LEADERS } from '../data/leaders.js';
 
 const TOTAL = LEADERS.length;
 
-export default function ProfilePage({ showToast, setTab }) {
-  const { t, tName, tTitle, user, logout, getEval, getRx, clearAll } = useApp();
+export default function ProfilePage({ showToast, setTab, onTendency }) {
+  const { t, tName, tTitle, user, logout, getEval, getRx, clearAll, evals } = useApp();
 
   const doneCount = LEADERS.filter(l => !!getEval(l.id)).length;
+  const canTendency = doneCount >= 3;
   const completionPct = TOTAL > 0 ? Math.round((doneCount / TOTAL) * 100) : 0;
 
   const history = LEADERS
@@ -68,8 +69,20 @@ export default function ProfilePage({ showToast, setTab }) {
         )}
       </div>
 
+      {/* 성향 리포트 */}
+      <div className="profile-section-title">📋 재판관 성향</div>
+      {canTendency ? (
+        <button className="profile-tendency-btn" onClick={onTendency}>
+          📋 나의 재판관 성향 확인하기
+        </button>
+      ) : (
+        <p className="profile-tendency-hint">
+          <b>{3 - doneCount}명</b>을 더 평가하면 재판관 성향 리포트를 볼 수 있어요
+        </p>
+      )}
+
       {/* Menu */}
-      <div className="profile-menu">
+      <div className="profile-menu" style={{ marginTop: 16 }}>
         <button className="profile-menu-item danger" onClick={handleReset}>
           <span className="profile-menu-icon">🗑️</span>
           <div className="profile-menu-text">

@@ -1,5 +1,7 @@
 import { createContext, useContext, useState, useCallback } from 'react';
 import { TRANSLATIONS } from '../data/translations';
+import { LEADERS } from '../data/leaders';
+import { PROPOSAL_TYPE_MAP, JUDGE_PROFILES } from '../data/briefs';
 
 const AppContext = createContext(null);
 
@@ -17,6 +19,7 @@ export function AppProvider({ children }) {
   const [user, setUser] = useState(() => LS.get('gp_user'));
   const [evals, setEvals] = useState(() => LS.get('gp_evals', {}));
   const [rxMap, setRxMap] = useState(() => LS.get('gp_rx_map', {}));
+  const [proposalLog, setProposalLog] = useState(() => LS.get('gp_plog', []));
   const [activeSheet, setActiveSheet] = useState(null);
   const [rxLeader, setRxLeader] = useState(null);
 
@@ -59,11 +62,42 @@ export function AppProvider({ children }) {
 
   const getRx = useCallback((id) => rxMap[id] ?? null, [rxMap]);
 
+  const saveProposal = useCallback((key) => {
+    const next = [...proposalLog, key];
+    setProposalLog(next);
+    LS.set('gp_plog', next);
+  }, [proposalLog]);
+
+  const getTendencyType = useCallback(() => {
+    const counts = { rationalist: 0, humanitarian: 0, multilateralist: 0, accountability: 0 };
+    proposalLog.forEach(key => {
+      const t = PROPOSAL_TYPE_MAP[key];
+      if (t) counts[t]++;
+    });
+    const total = Object.values(counts).reduce((a, b) => a + b, 0);
+    if (total === 0) {
+      const scores = LEADERS.map(l => evals[l.id]?.peace ?? null).filter(v => v !== null);
+      const mean = scores.length ? scores.reduce((a, b) => a + b, 0) / scores.length : 50;
+      if (mean >= 68) return 'humanitarian';
+      if (mean >= 54) return 'multilateralist';
+      if (mean >= 40) return 'rationalist';
+      return 'accountability';
+    }
+    const order = ['rationalist', 'humanitarian', 'multilateralist', 'accountability'];
+    return order.reduce((best, t) => counts[t] > counts[best] ? t : best, order[0]);
+  }, [proposalLog, evals]);
+
+  const getTendencyProfile = useCallback(() => {
+    return JUDGE_PROFILES[getTendencyType()];
+  }, [getTendencyType]);
+
   const clearAll = useCallback(() => {
     setEvals({});
     setRxMap({});
+    setProposalLog([]);
     LS.remove('gp_evals');
     LS.remove('gp_rx_map');
+    LS.remove('gp_plog');
   }, []);
 
   return (
@@ -72,6 +106,7 @@ export function AppProvider({ children }) {
       user, login, logout,
       evals, saveEval, getEval,
       rxMap, saveRx, getRx,
+      proposalLog, saveProposal, getTendencyType, getTendencyProfile,
       clearAll,
       activeSheet, setActiveSheet,
       rxLeader, setRxLeader,
