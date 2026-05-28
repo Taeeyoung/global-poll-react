@@ -148,16 +148,11 @@ export default function Sheet({ leader, onClose, onGoToRx, showToast }) {
       >
         <div className="sheet-handle" />
 
-        <div className="sheet-flag-strip">
-          <div className="sheet-flag-bg" style={bgStyle} />
-          <div className="sheet-flag-overlay">
-            <span className="sheet-flag-emoji">{leader.emoji}</span>
-            <div className="sheet-flag-text">
-              <span className="sheet-flag-name">{tName(leader.id)}</span>
-              <span className="sheet-flag-title">{tTitle(leader.id)}</span>
-              <span className="sheet-flag-country">{leader.country}</span>
-            </div>
-          </div>
+        <div className="sheet-flag-strip" style={bgStyle} />
+
+        <div className="sheet-leader-row">
+          <div className="sheet-flag-name">{tName(leader.id)}</div>
+          <div className="sheet-flag-title">{tTitle(leader.id)}</div>
         </div>
 
         <div className="sheet-body">

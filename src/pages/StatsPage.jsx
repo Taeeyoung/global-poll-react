@@ -1,5 +1,5 @@
 import { useApp } from '../context/AppContext.jsx';
-import { LEADERS } from '../data/leaders.js';
+import { LEADERS, FLAG_BG } from '../data/leaders.js';
 
 const TOTAL = LEADERS.length;
 
@@ -35,12 +35,16 @@ export default function StatsPage() {
         <div className="stats-empty">{t('stats_empty')}</div>
       ) : (
         <div className="stats-rank-table">
-          {ranked.map((item, i) => (
+          {ranked.map((item, i) => {
+            const bg = FLAG_BG[item.leader.id] || '#e2e8f0';
+            const bgStyle = bg.startsWith('linear') || bg.startsWith('radial')
+              ? { background: bg } : { backgroundColor: bg };
+            return (
             <div key={item.leader.id} className="stats-rank-row">
               <div className={`stats-rank-num${i < 3 ? ' top' : ''}`}>
                 {i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : i + 1}
               </div>
-              <span className="stats-rank-emoji">{item.leader.emoji}</span>
+              <div className="stats-rank-flag" style={bgStyle} />
               <span className="stats-rank-name">{tName(item.leader.id)}</span>
               <div className="stats-rank-bar-wrap">
                 <div className="stats-rank-bar">
@@ -52,7 +56,7 @@ export default function StatsPage() {
               </div>
               <span className="stats-rank-score">{item.ev.peace}</span>
             </div>
-          ))}
+          );})}
         </div>
       )}
     </div>
