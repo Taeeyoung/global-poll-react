@@ -2,7 +2,7 @@ import { useApp } from '../context/AppContext.jsx';
 import { FLAG_BG, GLOW_COLOR, LEADERS } from '../data/leaders.js';
 import { PORTRAITS } from '../data/portraits.js';
 
-export default function LeaderCard({ leader, onClick }) {
+export default function LeaderCard({ leader, onClick, featured = false }) {
   const { tName, getEval, evals } = useApp();
   const ev = getEval(leader.id);
 
@@ -29,7 +29,7 @@ export default function LeaderCard({ leader, onClick }) {
 
   return (
     <div
-      className="ldr-card"
+      className={`ldr-card${featured ? ' featured' : ''}`}
       onClick={onClick}
       style={{ '--glow': glow }}
     >
@@ -45,14 +45,36 @@ export default function LeaderCard({ leader, onClick }) {
         }
       </div>
 
-      {/* 정보 */}
-      <div className="ldr-info">
-        <div className="ldr-name">{tName(leader.id)}</div>
-        <div className="ldr-country">{leader.country}</div>
-      </div>
+      {/* 텍스트 + 버튼 래퍼 (가로형 레이아웃에서 우측 컬럼 역할) */}
+      <div className="ldr-content">
+        <div className="ldr-info">
+          <div className="ldr-name">{tName(leader.id)}</div>
+          <div className="ldr-country">{leader.country}</div>
+          {leader.chip && <div className="ldr-chip">{leader.chip}</div>}
 
-      <div className={`ldr-eval-btn${ev ? ' done' : ''}`}>
-        {ev ? '✓ 평가완료' : '평가하기'}
+          {ev && (
+            <div className="ldr-scores">
+              <div className="ldr-score-row">
+                <span className="ldr-score-ico">🕊️</span>
+                <div className="ldr-score-track">
+                  <div className="ldr-score-fill peace" style={{ width: `${ev.peace}%` }} />
+                </div>
+                <span className="ldr-score-num peace">{ev.peace}</span>
+              </div>
+              <div className="ldr-score-row">
+                <span className="ldr-score-ico">🔥</span>
+                <div className="ldr-score-track">
+                  <div className="ldr-score-fill tension" style={{ width: `${ev.tension}%` }} />
+                </div>
+                <span className="ldr-score-num tension">{ev.tension}</span>
+              </div>
+            </div>
+          )}
+        </div>
+
+        <div className={`ldr-eval-btn${ev ? ' done' : ''}`}>
+          {ev ? '✓ 완료' : '평가하기'}
+        </div>
       </div>
     </div>
   );

@@ -47,11 +47,6 @@ export const PORTRAITS = {
     hair('M30 71 Q28 44 60 40 Q92 44 90 71 Q82 55 60 52 Q38 55 30 71Z', '#111111') +
     brows('#111111') + eyes() + nose('#C8A070') + mouth('#A07848') + E,
 
-  lee: S + bg('#1D3461') + suit('#1A2A44') + shirt() + tie('#4B8FD5') + neck('#F0C898') + ears('#F0C898') +
-    face('#F0C898', 29, 32) +
-    hair('M31 70 Q30 44 60 40 Q90 44 89 70 Q80 54 60 52 Q40 54 31 70Z', '#111111') +
-    brows('#111111') + eyes() + nose('#C8A070') + mouth('#A07848') + E,
-
   ishiba: S + bg('#234080') + suit('#1A1A2E') + shirt() + tie('#8A3030') + neck('#F0C898') + ears('#F0C898') +
     face('#F0C898', 30, 33) +
     hair('M30 70 Q28 44 60 40 Q92 44 90 70 Q82 55 60 52 Q38 55 30 70Z', '#C4BCB0') +

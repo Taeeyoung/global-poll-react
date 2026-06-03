@@ -19,11 +19,6 @@ export const SOURCES = {
     { outlet: 'Al Jazeera', title: "China's Xi expected to press Trump on Taiwan, tariffs during summit", url: 'https://www.aljazeera.com/news/2026/5/13/chinas-xi-to-press-trump-on-taiwan-tariffs-during-summit' },
     { outlet: 'Al Jazeera', title: "China faces 'profound' changes, vows 'rapid' development in five-year plan", url: 'https://www.aljazeera.com/news/2025/10/23/china-faces-profound-changes-vows-rapid-development-in-five-year-plan' },
   ],
-  lee: [
-    { outlet: 'Al Jazeera', title: "Liberal Lee wins South Korean presidential election as rival concedes", url: 'https://www.aljazeera.com/news/2025/6/3/liberal-lee-set-to-win-south-koreas-presidential-election-exit-poll' },
-    { outlet: 'Al Jazeera', title: "South Korea's Lee promises to 'heal wounds' in first address as president", url: 'https://www.aljazeera.com/news/2025/6/4/south-koreas-lee-promises-to-heal-wounds-in-first-address-as-president' },
-    { outlet: 'OPB / AP', title: "Liberal opposition candidate Lee Jae-myung elected South Korea's new president", url: 'https://www.opb.org/article/2025/06/03/liberal-opposition-candidate-lee-jae-myung-elected-south-korea-s-new-president/' },
-  ],
   ishiba: [
     { outlet: 'Al Jazeera', title: "Trump, Japan's Ishiba play nice despite tariff threat", url: 'https://www.aljazeera.com/economy/2025/2/8/trump-japans-ishiba-play-nice-despite-tariff-threat' },
     { outlet: 'Al Jazeera', title: "Japan's PM Ishiba vows to stay in office despite election debacle", url: 'https://www.aljazeera.com/news/2025/7/23/japans-pm-ishiba-vows-to-stay-in-office-despite-election-debacle' },

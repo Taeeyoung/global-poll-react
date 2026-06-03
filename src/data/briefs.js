@@ -3,7 +3,6 @@ export const BRIEFS = {
   putin:     { peace: '외교 채널 복원 시 유럽 안정 기대',           tension: '우크라이나 전쟁 지속으로 핵 위험 상승' },
   zelensky:  { peace: '영토 방어 성공이 공정한 협상 조건 형성',      tension: '전쟁 장기화로 민간 피해 계속 누적' },
   xi:        { peace: '일대일로 외교로 다자 협력 주도 가능',         tension: '대만 긴장·무역전쟁으로 아시아 불안' },
-  lee:       { peace: '대화 기조 강화로 남북 긴장 완화 기대',        tension: '북핵 대응 입장 불분명으로 동맹 불안' },
   ishiba:    { peace: '방위 협력 강화로 지역 억지력 향상',           tension: '역사 문제 미해결로 한·중 관계 경색' },
   macron:    { peace: '유럽 자율 국방 추진으로 안보 다변화',         tension: '내부 정치 분열로 외교력 약화 우려' },
   modi:      { peace: '비동맹 중재자로 글로벌 대화 촉진 기대',       tension: '국경 분쟁·종교 갈등으로 지역 불안' },

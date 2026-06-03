@@ -59,7 +59,7 @@ export default function App() {
 
   return (
     <div className="app-layout">
-      <Header />
+      <Header tab={tab} setTab={setTab} />
 
       <main className="page">
         {tab === 'home' && <HomePage showToast={showToast} />}
