@@ -8,7 +8,6 @@ import WorldMapView from '../components/WorldMapView.jsx';
 
 const TOTAL = LEADERS.length;
 const TENDENCY_THRESHOLD = 3;
-const FEATURED = LEADERS.filter(l => l.featured);
 
 function MissionCard({ doneCount }) {
   const pct = Math.round((doneCount / TOTAL) * 100);
@@ -31,38 +30,6 @@ function MissionCard({ doneCount }) {
       </div>
       <div className="mission-card-track">
         <div className="mission-card-fill" style={{ width: `${pct}%` }} />
-      </div>
-    </div>
-  );
-}
-
-function FeaturedCard({ leader, onClick }) {
-  const { tName, getEval } = useApp();
-  const ev = getEval(leader.id);
-  return (
-    <button className={`featured-card${ev ? ' done' : ''}`} onClick={onClick}>
-      <div className="fc-row">
-        <div className="fc-info">
-          <span className="fc-name">{tName(leader.id)}</span>
-          <span className="fc-country">{leader.country}</span>
-        </div>
-        <span className={`fc-arrow${ev ? ' done' : ''}`}>{ev ? '✓' : '›'}</span>
-      </div>
-      {leader.chip && <span className="fc-chip">{leader.chip}</span>}
-    </button>
-  );
-}
-
-function FeaturedSection({ onCardClick }) {
-  return (
-    <div className="featured-section">
-      <div className="featured-header">
-        <span className="featured-title">🔥 지금 주목 지도자</span>
-      </div>
-      <div className="featured-list">
-        {FEATURED.map(leader => (
-          <FeaturedCard key={leader.id} leader={leader} onClick={() => onCardClick(leader)} />
-        ))}
       </div>
     </div>
   );
@@ -120,8 +87,25 @@ function ConflictIssueSection({ onConflictClick }) {
   );
 }
 
+const FILTER_OPTIONS = [
+  { value: 'all',         label: '전체' },
+  { value: 'featured',    label: '🔥 주목' },
+  { value: 'unevaluated', label: '미평가' },
+  { value: 'evaluated',   label: '✓ 완료' },
+];
+const SORT_OPTIONS = [
+  { value: 'default',     label: '기본순' },
+  { value: 'name',        label: '이름순' },
+  { value: 'avg_high',    label: '평점 높은순' },
+  { value: 'avg_low',     label: '평점 낮은순' },
+  { value: 'unevaluated', label: '미평가 먼저' },
+];
+
 function CardView({ onCardClick }) {
+  const { getEval, tName } = useApp();
   const sentinelRef = useRef(null);
+  const [filter, setFilter] = useState('all');
+  const [sort, setSort]     = useState('default');
 
   useEffect(() => {
     const el = sentinelRef.current;
@@ -137,17 +121,49 @@ function CardView({ onCardClick }) {
     return () => { observer.disconnect(); clearTimeout(timer); };
   }, []);
 
+  const displayed = LEADERS
+    .filter(l => {
+      if (filter === 'featured')    return l.featured;
+      if (filter === 'unevaluated') return !getEval(l.id);
+      if (filter === 'evaluated')   return !!getEval(l.id);
+      return true;
+    })
+    .sort((a, b) => {
+      if (sort === 'name')        return tName(a.id).localeCompare(tName(b.id), 'ko');
+      if (sort === 'avg_high')    return (b.avg ?? 0) - (a.avg ?? 0);
+      if (sort === 'avg_low')     return (a.avg ?? 0) - (b.avg ?? 0);
+      if (sort === 'unevaluated') {
+        const aEv = !!getEval(a.id), bEv = !!getEval(b.id);
+        return aEv === bEv ? 0 : aEv ? 1 : -1;
+      }
+      return 0;
+    });
+
   return (
     <>
-      <FeaturedSection onCardClick={onCardClick} />
-
-      <div className="home-section-header">
-        <span className="home-section-title">🌍 전체 지도자</span>
-        <span className="home-section-count">{LEADERS.length}명</span>
+      <div className="cv-filterbar">
+        <div className="cv-chips">
+          {FILTER_OPTIONS.map(({ value, label }) => (
+            <button
+              key={value}
+              className={`cv-chip${filter === value ? ' active' : ''}`}
+              onClick={() => setFilter(value)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+        <select className="cv-sort" value={sort} onChange={e => setSort(e.target.value)}>
+          {SORT_OPTIONS.map(({ value, label }) => (
+            <option key={value} value={value}>{label}</option>
+          ))}
+        </select>
       </div>
 
+      <div className="cv-count">지도자 <strong>{displayed.length}</strong>명</div>
+
       <div className="leaders-grid">
-        {LEADERS.map(leader => (
+        {displayed.map(leader => (
           <LeaderCard key={leader.id} leader={leader} onClick={() => onCardClick(leader)} />
         ))}
       </div>

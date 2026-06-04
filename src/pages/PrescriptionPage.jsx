@@ -1,7 +1,49 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useApp } from '../context/AppContext.jsx';
 import { LEADERS, PILLS, PILL_MAP, EVAL_OPTIONS, REASON_OPTIONS, LEADER_SUMMARY } from '../data/leaders.js';
 import LeaderAvatar from '../components/LeaderAvatar.jsx';
+
+const CONFETTI_COLORS = ['#f87171','#fb923c','#fbbf24','#4ade80','#38bdf8','#818cf8','#f472b6','#34d399'];
+
+function Confetti({ onDone }) {
+  const pieces = useMemo(() => (
+    Array.from({ length: 80 }, (_, i) => ({
+      id: i,
+      color: CONFETTI_COLORS[i % CONFETTI_COLORS.length],
+      left: Math.random() * 100,
+      delay: Math.random() * 0.3,
+      duration: 1.2 + Math.random() * 0.8,
+      width: 6 + Math.random() * 8,
+      height: 4 + Math.random() * 10,
+      round: Math.random() > 0.55,
+      rotate: Math.random() * 360,
+    }))
+  ), []);
+
+  useEffect(() => {
+    const t = setTimeout(onDone, 3600);
+    return () => clearTimeout(t);
+  }, [onDone]);
+
+  return (
+    <div style={{ position:'fixed', inset:0, pointerEvents:'none', zIndex:9999, overflow:'hidden' }}>
+      {pieces.map(p => (
+        <div key={p.id} style={{
+          position: 'absolute',
+          left: `${p.left}%`,
+          top: -16,
+          width: p.width,
+          height: p.height,
+          background: p.color,
+          borderRadius: p.round ? '50%' : '2px',
+          opacity: 0.92,
+          animation: `confettiFall ${p.duration}s ${p.delay}s ease-in forwards`,
+          transform: `rotate(${p.rotate}deg)`,
+        }} />
+      ))}
+    </div>
+  );
+}
 
 function formatDate(ts) {
   if (!ts) return '';
@@ -45,17 +87,32 @@ function ChoiceGrid({ options, selected, multi, onSelect, className }) {
 function RxPaper({ leader, evalOpt, reasons, topFactor, pills, comment, onRewrite }) {
   const { tName, tTitle, user } = useApp();
   const selectedPills = PILLS.filter(p => pills.includes(p.id));
+  const serial = `GP-${formatDate(Date.now()).replace(/\./g,'')}-${leader.id.toUpperCase().slice(0,3)}`;
 
   return (
     <>
     <div className="rx-paper">
+      {/* 좌우 천공 */}
+      <div className="rx-paper-perf rx-paper-perf-l" />
+      <div className="rx-paper-perf rx-paper-perf-r" />
+
+      {/* 발행완료 도장 */}
+      <div className="rx-paper-seal" aria-hidden="true">
+        <span className="rx-paper-seal-text">발행완료</span>
+        <span className="rx-paper-seal-sub">ISSUED</span>
+      </div>
+
       <div className="rx-paper-header">
+        <div className="rx-paper-rx-mark">Rx</div>
         <div className="rx-paper-portrait"><LeaderAvatar leader={leader} /></div>
         <div className="rx-paper-header-text">
-          <div className="rx-paper-header-title">🌡️ 평화온도 처방전</div>
+          <div className="rx-paper-header-title">평화온도 처방전</div>
           <div className="rx-paper-header-sub">Global Poll · {formatDate(Date.now())}</div>
+          <div className="rx-paper-serial-row">
+            <span className="rx-paper-serial">{serial}</span>
+            <span className="rx-paper-live"><span className="rx-paper-live-dot" />실시간 발행</span>
+          </div>
         </div>
-        <div className="rx-paper-stamp">📋</div>
       </div>
       <div className="rx-paper-body">
         <div className="rx-paper-meta">
@@ -105,15 +162,17 @@ function RxForm({ leader, showToast }) {
   const { getRx, saveRx } = useApp();
   const existing = getRx(leader.id);
 
-  const [evalOpt,   setEvalOpt]   = useState(existing?.evalOpt || '');
-  const [grid1Open, setGrid1Open] = useState(!existing?.evalOpt);
-  const [reasons,   setReasons]   = useState(existing?.reasons || []);
-  const [grid2Open, setGrid2Open] = useState(false);
-  const [topFactor, setTopFactor] = useState(existing?.topFactor || '');
-  const [grid3Open, setGrid3Open] = useState(false);
-  const [selPills,  setSelPills]  = useState(existing?.pills || []);
-  const [comment,   setComment]   = useState(existing?.comment || '');
-  const [showPaper, setShowPaper] = useState(!!existing);
+  const [evalOpt,      setEvalOpt]      = useState(existing?.evalOpt || '');
+  const [grid1Open,    setGrid1Open]    = useState(!existing?.evalOpt);
+  const [reasons,      setReasons]      = useState(existing?.reasons || []);
+  const [grid2Open,    setGrid2Open]    = useState(false);
+  const [topFactor,    setTopFactor]    = useState(existing?.topFactor || '');
+  const [grid3Open,    setGrid3Open]    = useState(false);
+  const [selPills,     setSelPills]     = useState(existing?.pills || []);
+  const [comment,      setComment]      = useState(existing?.comment || '');
+  const [showPaper,    setShowPaper]    = useState(!!existing);
+  const [showConfetti, setShowConfetti] = useState(false);
+  const hideConfetti = useCallback(() => setShowConfetti(false), []);
 
   const step1Done = !!evalOpt;
   const step2Done = reasons.length > 0;
@@ -137,11 +196,17 @@ function RxForm({ leader, showToast }) {
   const handleSubmit = () => {
     saveRx(leader.id, { evalOpt, reasons, topFactor, pills: selPills, comment });
     setShowPaper(true);
-    showToast('📋 처방전이 발행되었습니다!');
+    setShowConfetti(true);
+    showToast('재판관님 처방전이 발행되었습니다! 🎉');
   };
 
   if (showPaper) {
-    return <RxPaper leader={leader} evalOpt={evalOpt} reasons={reasons} topFactor={topFactor} pills={selPills} comment={comment} onRewrite={() => setShowPaper(false)} />;
+    return (
+      <>
+        {showConfetti && <Confetti onDone={hideConfetti} />}
+        <RxPaper leader={leader} evalOpt={evalOpt} reasons={reasons} topFactor={topFactor} pills={selPills} comment={comment} onRewrite={() => setShowPaper(false)} />
+      </>
+    );
   }
 
   return (
@@ -198,8 +263,10 @@ function RxForm({ leader, showToast }) {
                 onClick={() => setSelPills(prev => prev.includes(p.id) ? prev.filter(x => x !== p.id) : [...prev, p.id])}>
                 {recIdx !== -1 && <div className="rx-pi-rec-badge">{recIdx === 0 ? '★ 추천' : '추천'}</div>}
                 <span className="rx-pi-ico">{p.icon}</span>
-                <div className="rx-pi-nm">{p.name}</div>
-                <div className="rx-pi-desc">{p.dose}</div>
+                <div className="rx-pi-body">
+                  <div className="rx-pi-nm">{p.name}</div>
+                  <div className="rx-pi-desc">{p.dose}</div>
+                </div>
                 <div className="rx-pi-chk">✓</div>
               </div>
             );

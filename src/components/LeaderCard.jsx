@@ -62,7 +62,7 @@ export default function LeaderCard({ leader, onClick }) {
         <div className="ldr-card-sub">{leader.title}</div>
 
         <div className="ldr-card-avg-row">
-          <span className="ldr-card-avg-label">글로벌 평균</span>
+          <span className="ldr-card-avg-label">글로벌 평균 <span className="ldr-card-avg-sample">샘플</span></span>
           <span className="ldr-card-avg-score" style={{ color: scoreColor(avg) }}>{avg}</span>
           <span className="ldr-card-avg-denom">/100</span>
         </div>
