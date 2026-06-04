@@ -1,7 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import { useApp } from '../context/AppContext.jsx';
 import { LEADERS } from '../data/leaders.js';
+import { CONFLICTS } from '../data/conflicts.js';
 import LeaderCard from '../components/LeaderCard.jsx';
+import LeaderAvatar from '../components/LeaderAvatar.jsx';
 import WorldMapView from '../components/WorldMapView.jsx';
 
 const TOTAL = LEADERS.length;
@@ -10,17 +12,11 @@ const FEATURED = LEADERS.filter(l => l.featured);
 
 function MissionCard({ doneCount }) {
   const pct = Math.round((doneCount / TOTAL) * 100);
-
   let message;
-  if (doneCount === 0) {
-    message = '첫 번째 지도자를 평가해보세요';
-  } else if (doneCount < TENDENCY_THRESHOLD) {
-    message = `${TENDENCY_THRESHOLD - doneCount}명 더 평가하면 재판관 성향 리포트가 열려요!`;
-  } else if (doneCount < TOTAL) {
-    message = `성향 리포트 열림 🎉  ·  ${TOTAL - doneCount}명 남았어요`;
-  } else {
-    message = '🏆 모든 지도자 평가 완료!';
-  }
+  if (doneCount === 0)                    message = '첫 번째 지도자를 평가해보세요';
+  else if (doneCount < TENDENCY_THRESHOLD) message = `${TENDENCY_THRESHOLD - doneCount}명 더 평가하면 재판관 성향 리포트가 열려요!`;
+  else if (doneCount < TOTAL)             message = `성향 리포트 열림 🎉  ·  ${TOTAL - doneCount}명 남았어요`;
+  else                                    message = '🏆 모든 지도자 평가 완료!';
 
   return (
     <div className="mission-card">
@@ -61,15 +57,63 @@ function FeaturedSection({ onCardClick }) {
   return (
     <div className="featured-section">
       <div className="featured-header">
-        <span className="featured-title">🔥 지금 주목</span>
+        <span className="featured-title">🔥 지금 주목 지도자</span>
       </div>
       <div className="featured-list">
         {FEATURED.map(leader => (
-          <FeaturedCard
-            key={leader.id}
-            leader={leader}
-            onClick={() => onCardClick(leader)}
-          />
+          <FeaturedCard key={leader.id} leader={leader} onClick={() => onCardClick(leader)} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ── 분쟁 이슈 모달 ── */
+function ConflictLeadersModal({ conflict, onLeaderClick, onClose }) {
+  const { tName } = useApp();
+  const leaders = conflict.leaders
+    .map(id => LEADERS.find(l => l.id === id))
+    .filter(Boolean);
+
+  return (
+    <div className="ci-modal-overlay" onClick={onClose}>
+      <div className="ci-modal" onClick={e => e.stopPropagation()}>
+        <button className="ci-modal-close" onClick={onClose}>×</button>
+        <div className="ci-modal-title">⚔️ {conflict.name}</div>
+        <div className="ci-modal-chip">{conflict.chip}</div>
+        {conflict.desc && <p className="ci-modal-desc">{conflict.desc}</p>}
+        <div className="ci-modal-leaders">
+          {leaders.map(leader => (
+            <button
+              key={leader.id}
+              className="ci-modal-leader"
+              onClick={() => { onLeaderClick(leader); onClose(); }}
+            >
+              <div className="ci-modal-avatar"><LeaderAvatar leader={leader} /></div>
+              <span className="ci-modal-name">{tName(leader.id)}</span>
+              <span className="ci-modal-role">{leader.title}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── 지금 주목 이슈 섹션 ── */
+function ConflictIssueSection({ onConflictClick }) {
+  const featured = CONFLICTS.filter(c => c.featured);
+  return (
+    <div className="ci-section">
+      <div className="ci-section-header">
+        <span className="ci-section-title">🌐 지금 주목 이슈</span>
+      </div>
+      <div className="ci-chips">
+        {featured.map(c => (
+          <button key={c.id} className="ci-chip" onClick={() => onConflictClick(c)}>
+            <span className="ci-chip-icon">⚔️</span>
+            {c.name}
+          </button>
         ))}
       </div>
     </div>
@@ -82,11 +126,15 @@ function CardView({ onCardClick }) {
   useEffect(() => {
     const el = sentinelRef.current;
     if (!el) return;
+    let timer = null;
     const observer = new IntersectionObserver(([entry]) => {
-      el.dataset.visible = entry.isIntersecting ? '1' : '0';
+      if (entry.isIntersecting) {
+        el.className = 'home-loader home-loader-in';
+        timer = setTimeout(() => { el.className = 'home-loader home-loader-out'; }, 1800);
+      }
     }, { threshold: 0.1 });
     observer.observe(el);
-    return () => observer.disconnect();
+    return () => { observer.disconnect(); clearTimeout(timer); };
   }, []);
 
   return (
@@ -95,16 +143,12 @@ function CardView({ onCardClick }) {
 
       <div className="home-section-header">
         <span className="home-section-title">🌍 전체 지도자</span>
-        <span className="home-section-count">{LEADERS.filter(() => true).length}명</span>
+        <span className="home-section-count">{LEADERS.length}명</span>
       </div>
 
       <div className="leaders-grid">
         {LEADERS.map(leader => (
-          <LeaderCard
-            key={leader.id}
-            leader={leader}
-            onClick={() => onCardClick(leader)}
-          />
+          <LeaderCard key={leader.id} leader={leader} onClick={() => onCardClick(leader)} />
         ))}
       </div>
 
@@ -119,14 +163,13 @@ function CardView({ onCardClick }) {
 export default function HomePage({ showToast }) {
   const { getEval, setActiveSheet } = useApp();
   const [homeTab, setHomeTab] = useState('card');
-
+  const [activeConflict, setActiveConflict] = useState(null);
   const doneCount = LEADERS.filter(l => !!getEval(l.id)).length;
 
   return (
     <div className="home-inner">
       <MissionCard doneCount={doneCount} />
 
-      {/* 서브 탭 */}
       <div className="home-sub-tabs">
         <button
           className={`home-sub-tab${homeTab === 'map' ? ' active' : ''}`}
@@ -142,8 +185,21 @@ export default function HomePage({ showToast }) {
         </button>
       </div>
 
-      {homeTab === 'map'  && <WorldMapView onPinClick={setActiveSheet} />}
+      {homeTab === 'map' && (
+        <>
+          <ConflictIssueSection onConflictClick={setActiveConflict} />
+          <WorldMapView onPinClick={setActiveSheet} />
+        </>
+      )}
       {homeTab === 'card' && <CardView onCardClick={setActiveSheet} />}
+
+      {activeConflict && (
+        <ConflictLeadersModal
+          conflict={activeConflict}
+          onLeaderClick={setActiveSheet}
+          onClose={() => setActiveConflict(null)}
+        />
+      )}
     </div>
   );
 }

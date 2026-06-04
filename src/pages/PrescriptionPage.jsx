@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useApp } from '../context/AppContext.jsx';
 import { LEADERS, PILLS, PILL_MAP, EVAL_OPTIONS, REASON_OPTIONS, LEADER_SUMMARY } from '../data/leaders.js';
-import { PORTRAITS } from '../data/portraits.js';
-import { FLAG_BG } from '../data/leaders.js';
+import LeaderAvatar from '../components/LeaderAvatar.jsx';
 
 function formatDate(ts) {
   if (!ts) return '';
@@ -45,14 +44,13 @@ function ChoiceGrid({ options, selected, multi, onSelect, className }) {
 
 function RxPaper({ leader, evalOpt, reasons, topFactor, pills, comment, onRewrite }) {
   const { tName, tTitle, user } = useApp();
-  const portrait = PORTRAITS[leader.id];
   const selectedPills = PILLS.filter(p => pills.includes(p.id));
 
   return (
     <>
     <div className="rx-paper">
       <div className="rx-paper-header">
-        {portrait && <div className="rx-paper-portrait" dangerouslySetInnerHTML={{ __html: portrait }} />}
+        <div className="rx-paper-portrait"><LeaderAvatar leader={leader} /></div>
         <div className="rx-paper-header-text">
           <div className="rx-paper-header-title">🌡️ 평화온도 처방전</div>
           <div className="rx-paper-header-sub">Global Poll · {formatDate(Date.now())}</div>
@@ -223,9 +221,6 @@ function RxForm({ leader, showToast }) {
 function LeaderRow({ leader, done, isOpen, onToggle, showToast }) {
   const { tName, tTitle } = useApp();
   const formRef = useRef(null);
-  const portrait = PORTRAITS[leader.id];
-  const bg = FLAG_BG[leader.id] || '#e2e8f0';
-  const bgStyle = bg.startsWith('linear') || bg.startsWith('radial') ? { background: bg } : { backgroundColor: bg };
 
   useEffect(() => {
     if (isOpen && formRef.current) {
@@ -236,8 +231,8 @@ function LeaderRow({ leader, done, isOpen, onToggle, showToast }) {
   return (
     <div className="rxl-item">
       <button className={`rxl-row${isOpen ? ' active' : ''}`} onClick={onToggle}>
-        <div className="rxl-flag" style={bgStyle}>
-          {portrait && <div className="rxl-portrait" dangerouslySetInnerHTML={{ __html: portrait }} />}
+        <div className="rxl-flag">
+          <LeaderAvatar leader={leader} />
         </div>
         <div className="rxl-info">
           <div className="rxl-name">{tName(leader.id)}</div>

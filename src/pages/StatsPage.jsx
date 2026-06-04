@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useApp } from '../context/AppContext.jsx';
-import { LEADERS, FLAG_BG } from '../data/leaders.js';
+import { LEADERS } from '../data/leaders.js';
 import MediaShareModal from '../components/MediaShareModal.jsx';
+import LeaderAvatar from '../components/LeaderAvatar.jsx';
 
 const TOTAL = LEADERS.length;
 
@@ -9,16 +10,13 @@ function RankTable({ items, type }) {
   return (
     <div className="stats-rank-table">
       {items.map((item, i) => {
-        const bg = FLAG_BG[item.leader.id] || '#e2e8f0';
-        const bgStyle = bg.startsWith('linear') || bg.startsWith('radial')
-          ? { background: bg } : { backgroundColor: bg };
         const score = type === 'peace' ? item.ev.peace : item.ev.tension;
         return (
           <div key={item.leader.id} className="stats-rank-row">
             <div className={`stats-rank-num${i < 3 ? ' top' : ''}`}>
               {i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : i + 1}
             </div>
-            <div className="stats-rank-flag" style={bgStyle} />
+            <div className="stats-rank-flag"><LeaderAvatar leader={item.leader} /></div>
             <span className="stats-rank-name">{item.name}</span>
             <div className="stats-rank-bar-wrap">
               <div className="stats-rank-bar">

@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext.jsx';
-import { FLAG_BG } from '../data/leaders.js';
-import { PORTRAITS } from '../data/portraits.js';
 import { BRIEFS } from '../data/briefs.js';
+import LeaderAvatar from './LeaderAvatar.jsx';
 import { LEADER_SUMMARY } from '../data/leaders.js';
 import { SOURCES } from '../data/sources.js';
 
@@ -134,12 +133,6 @@ export default function Sheet({ leader, onClose, onGoToRx, showToast }) {
     setTimeout(() => onGoToRx(l), 320);
   };
 
-  const bg = FLAG_BG[leader.id] || '#e2e8f0';
-  const bgStyle = bg.startsWith('linear') || bg.startsWith('radial')
-    ? { background: bg } : { backgroundColor: bg };
-
-  const portrait = PORTRAITS[leader.id];
-
   return (
     <div className="sheet-overlay" onClick={handleClose}>
       <div className={`sheet${isOpen ? ' open' : ''}`} onClick={e => e.stopPropagation()}>
@@ -147,14 +140,8 @@ export default function Sheet({ leader, onClose, onGoToRx, showToast }) {
 
         {/* 헤더: 초상화 + 이름 */}
         <div className="sheet-header">
-          <div className="sheet-flag-bg" style={bgStyle} />
           <div className="sheet-header-content">
-            {portrait && (
-              <div
-                className="sheet-portrait"
-                dangerouslySetInnerHTML={{ __html: portrait }}
-              />
-            )}
+            <div className="sheet-portrait"><LeaderAvatar leader={leader} /></div>
             <div className="sheet-leader-info">
               <div className="sheet-flag-name">{tName(leader.id)}</div>
               <div className="sheet-flag-title">{tTitle(leader.id)}</div>

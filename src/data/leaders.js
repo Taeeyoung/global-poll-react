@@ -15,38 +15,22 @@ export const GLOW_COLOR = {
   kim:       'rgba(218,0,0,.45)',
 };
 
-export const FLAG_BG = {
-  trump:     'linear-gradient(180deg,#B22234 33%,#fff 33%,#fff 66%,#3C3B6E 66%)',
-  putin:     'linear-gradient(180deg,#fff 33%,#0039A6 33%,#0039A6 66%,#D52B1E 66%)',
-  zelensky:  'linear-gradient(180deg,#005BBB 50%,#FFD500 50%)',
-  xi:        '#DE2910',
-  ishiba:    'radial-gradient(circle at center,#BC002D 28%,#fff 28%)',
-  macron:    'linear-gradient(90deg,#002395 33%,#fff 33%,#fff 66%,#ED2939 66%)',
-  modi:      'linear-gradient(180deg,#FF9933 33%,#fff 33%,#fff 66%,#138808 66%)',
-  netanyahu: 'linear-gradient(180deg,#fff 30%,#0038B8 30%,#0038B8 42%,#fff 42%,#fff 58%,#0038B8 58%,#0038B8 70%,#fff 70%)',
-  erdogan:   '#E30A17',
-  guterres:  '#4B9CD3',
-  pope:      'linear-gradient(90deg,#FFE000 50%,#fff 50%)',
-  mbs:       'linear-gradient(180deg,#006C35 40%,#fff 40%,#fff 60%,#006C35 60%)',
-  khamenei:  'linear-gradient(180deg,#239F40 33%,#fff 33%,#fff 66%,#DA0000 66%)',
-  kim:       'linear-gradient(180deg,#024FA2 20%,#DA0000 20%,#DA0000 40%,#024FA2 40%,#fff 40%,#fff 60%,#DA0000 60%,#DA0000 80%,#024FA2 80%)',
-};
 
 export const LEADERS = [
-  { id:'trump',    emoji:'🇺🇸', title:'미국 대통령',         country:'미국',      chip:'관세전쟁',    featured:true, desc:'America First 재추진, 고율 관세, NATO 분담금 압박으로 미국 우선주의 외교를 전면화하고 있습니다.' },
-  { id:'putin',    emoji:'🇷🇺', title:'러시아 대통령',        country:'러시아',    chip:'핵 위협',     featured:true, desc:'우크라이나 전쟁을 3년째 지속하며 핵 위협 발언과 중국·북한과의 연대로 서방 제재에 맞서고 있습니다.' },
-  { id:'zelensky', emoji:'🇺🇦', title:'우크라이나 대통령',     country:'우크라이나',chip:'전쟁 저항',   desc:'러시아 침공 저항의 상징으로 서방 군사·외교 지원 확보에 총력을 기울이고 있습니다.' },
-  { id:'xi',       emoji:'🇨🇳', title:'중국 국가주석',        country:'중국',      chip:'대만 긴장',   desc:'대만 해협 긴장과 미중 관세 전쟁을 동시에 관리하며 글로벌 사우스 외교를 통해 영향력을 확대하고 있습니다.' },
-  { id:'ishiba',   emoji:'🇯🇵', title:'일본 총리',            country:'일본',      chip:'방위비 증액', desc:'미일 동맹 강화와 방위비 증액을 추진하나 자민당 내 지지 기반 약화로 국정 운영에 어려움을 겪고 있습니다.' },
-  { id:'macron',   emoji:'🇫🇷', title:'프랑스 대통령',        country:'프랑스',    chip:'유럽 방위',   desc:'유럽 방위 자율성을 핵심 의제로 내걸며 우크라이나 지원을 주도하나 국내 정치적 입지가 약화된 상태입니다.' },
-  { id:'modi',     emoji:'🇮🇳', title:'인도 총리',            country:'인도',      chip:'인-파 분쟁', desc:'인-파 긴장 속에서 강경 대응과 전략적 자율성을 동시에 유지하며 글로벌 사우스 리더십을 강화하고 있습니다.' },
-  { id:'netanyahu',emoji:'🇮🇱', title:'이스라엘 총리',        country:'이스라엘',  chip:'가자 전쟁',  featured:true, desc:'가자 전쟁을 지속하며 ICC 체포영장에도 강경 기조를 유지하고 이란 핵 위협 대응에 집중하고 있습니다.' },
-  { id:'erdogan',  emoji:'🇹🇷', title:'튀르키예 대통령',      country:'튀르키예',  chip:'줄타기 외교', desc:'NATO 회원이면서 러시아와의 관계를 유지하는 줄타기 외교와 국내 경제 위기 관리가 핵심 현안입니다.' },
-  { id:'guterres', emoji:'🌍',  title:'UN 사무총장',          country:'유엔',      chip:'다자 중재',  desc:'복합 분쟁 속에서 UN 중재 역할을 이끌며 기후위기 대응과 다자주의 회복을 위한 목소리를 높이고 있습니다.' },
-  { id:'pope',     emoji:'✝️',  title:'로마 가톨릭 교황',     country:'바티칸',    chip:'평화 중재',  desc:'프란치스코 교황 선종 후 선출된 첫 미국 출신 교황으로 분쟁 지역 평화 중재를 우선 과제로 삼고 있습니다.' },
-  { id:'mbs',      emoji:'🇸🇦', title:'사우디 왕세자·총리',   country:'사우디',    chip:'비전 2030',  desc:'비전 2030으로 경제 다각화를 추진하며 이란 관계 정상화, 이스라엘 수교 논의로 중동 재편의 핵심 변수입니다.' },
-  { id:'khamenei', emoji:'🇮🇷', title:'이란 최고지도자',      country:'이란',      chip:'핵 협상',    desc:'핵 협상 지연 전략을 유지하며 대리전 네트워크가 약화된 상황에서도 핵 능력을 협상 카드로 활용하고 있습니다.' },
-  { id:'kim',      emoji:'🇰🇵', title:'북한 최고지도자',      country:'북한',      chip:'핵 고도화',  desc:'러시아 군사 협력으로 전략적 입지를 강화하며 핵·미사일 고도화와 체제 결속을 동시에 추진하고 있습니다.' },
+  { id:'trump',    emoji:'🇺🇸', title:'미국 대통령',         country:'미국',      chip:'관세전쟁',    featured:true, avg:42, votes:52840, desc:'America First 재추진, 고율 관세, NATO 분담금 압박으로 미국 우선주의 외교를 전면화하고 있습니다.' },
+  { id:'putin',    emoji:'🇷🇺', title:'러시아 대통령',        country:'러시아',    chip:'핵 위협',     featured:true, avg:18, votes:61200, desc:'우크라이나 전쟁을 3년째 지속하며 핵 위협 발언과 중국·북한과의 연대로 서방 제재에 맞서고 있습니다.' },
+  { id:'zelensky', emoji:'🇺🇦', title:'우크라이나 대통령',     country:'우크라이나',chip:'전쟁 저항',              avg:65, votes:44310, desc:'러시아 침공 저항의 상징으로 서방 군사·외교 지원 확보에 총력을 기울이고 있습니다.' },
+  { id:'xi',       emoji:'🇨🇳', title:'중국 국가주석',        country:'중국',      chip:'대만 긴장',              avg:38, votes:58900, desc:'대만 해협 긴장과 미중 관세 전쟁을 동시에 관리하며 글로벌 사우스 외교를 통해 영향력을 확대하고 있습니다.' },
+  { id:'ishiba',   emoji:'🇯🇵', title:'일본 총리',            country:'일본',      chip:'방위비 증액',            avg:51, votes:21030, desc:'미일 동맹 강화와 방위비 증액을 추진하나 자민당 내 지지 기반 약화로 국정 운영에 어려움을 겪고 있습니다.' },
+  { id:'macron',   emoji:'🇫🇷', title:'프랑스 대통령',        country:'프랑스',    chip:'유럽 방위',              avg:47, votes:28640, desc:'유럽 방위 자율성을 핵심 의제로 내걸며 우크라이나 지원을 주도하나 국내 정치적 입지가 약화된 상태입니다.' },
+  { id:'modi',     emoji:'🇮🇳', title:'인도 총리',            country:'인도',      chip:'인-파 분쟁',             avg:58, votes:41020, desc:'인-파 긴장 속에서 강경 대응과 전략적 자율성을 동시에 유지하며 글로벌 사우스 리더십을 강화하고 있습니다.' },
+  { id:'netanyahu',emoji:'🇮🇱', title:'이스라엘 총리',        country:'이스라엘',  chip:'가자 전쟁',  featured:true, avg:24, votes:53780, desc:'가자 전쟁을 지속하며 ICC 체포영장에도 강경 기조를 유지하고 이란 핵 위협 대응에 집중하고 있습니다.' },
+  { id:'erdogan',  emoji:'🇹🇷', title:'튀르키예 대통령',      country:'튀르키예',  chip:'줄타기 외교',            avg:40, votes:19870, desc:'NATO 회원이면서 러시아와의 관계를 유지하는 줄타기 외교와 국내 경제 위기 관리가 핵심 현안입니다.' },
+  { id:'guterres', emoji:'🌍',  title:'UN 사무총장',          country:'유엔',      chip:'다자 중재',              avg:55, votes:14520, desc:'복합 분쟁 속에서 UN 중재 역할을 이끌며 기후위기 대응과 다자주의 회복을 위한 목소리를 높이고 있습니다.' },
+  { id:'pope',     emoji:'✝️',  title:'로마 가톨릭 교황',     country:'바티칸',    chip:'평화 중재',              avg:72, votes:31450, desc:'프란치스코 교황 선종 후 선출된 첫 미국 출신 교황으로 분쟁 지역 평화 중재를 우선 과제로 삼고 있습니다.' },
+  { id:'mbs',      emoji:'🇸🇦', title:'사우디 왕세자·총리',   country:'사우디',    chip:'비전 2030',              avg:36, votes:17230, desc:'비전 2030으로 경제 다각화를 추진하며 이란 관계 정상화, 이스라엘 수교 논의로 중동 재편의 핵심 변수입니다.' },
+  { id:'khamenei', emoji:'🇮🇷', title:'이란 최고지도자',      country:'이란',      chip:'핵 협상',                avg:15, votes:22610, desc:'핵 협상 지연 전략을 유지하며 대리전 네트워크가 약화된 상황에서도 핵 능력을 협상 카드로 활용하고 있습니다.' },
+  { id:'kim',      emoji:'🇰🇵', title:'북한 최고지도자',      country:'북한',      chip:'핵 고도화',              avg:12, votes:26890, desc:'러시아 군사 협력으로 전략적 입지를 강화하며 핵·미사일 고도화와 체제 결속을 동시에 추진하고 있습니다.' },
 ];
 
 export const LEADER_SUMMARY = {

@@ -1,79 +1,78 @@
+import { useState } from 'react';
 import { useApp } from '../context/AppContext.jsx';
-import { FLAG_BG, GLOW_COLOR, LEADERS } from '../data/leaders.js';
-import { PORTRAITS } from '../data/portraits.js';
+import LeaderAvatar from './LeaderAvatar.jsx';
 
-export default function LeaderCard({ leader, onClick, featured = false }) {
-  const { tName, getEval, evals } = useApp();
-  const ev = getEval(leader.id);
+const CC = {
+  trump:'us', putin:'ru', zelensky:'ua', xi:'cn', ishiba:'jp',
+  macron:'fr', modi:'in', netanyahu:'il', erdogan:'tr',
+  guterres:'un', pope:'va', mbs:'sa', khamenei:'ir', kim:'kp',
+};
 
-  const bg = FLAG_BG[leader.id] || '#1e2d42';
-  const bgStyle = bg.startsWith('linear') || bg.startsWith('radial')
-    ? { background: bg } : { backgroundColor: bg };
+function FlagBadge({ id }) {
+  const [err, setErr] = useState(false);
+  const cc = CC[id];
+  return (
+    <span className="ldr-flag-badge">
+      {!err && cc && cc !== 'un'
+        ? <img src={`https://flagcdn.com/w80/${cc}.png`} alt={cc} onError={() => setErr(true)} />
+        : <span>{CC[id] === 'un' ? '🌍' : (cc ?? '').toUpperCase()}</span>}
+    </span>
+  );
+}
 
-  const glow = GLOW_COLOR[leader.id] || 'rgba(56,189,248,.2)';
-  const portrait = PORTRAITS[leader.id];
-
-  const evalledScores = LEADERS
-    .map(l => ({ id: l.id, peace: evals[l.id]?.peace ?? null }))
-    .filter(x => x.peace !== null);
-
-  let badge = null;
-  if (ev && evalledScores.length >= 2) {
-    const scores = evalledScores.map(x => x.peace);
-    if (ev.peace === Math.min(...scores)) badge = 'lowest';
-    else if (ev.peace === Math.max(...scores)) badge = 'highest';
-    else badge = 'done';
-  } else if (ev) {
-    badge = 'done';
+function scoreColor(v) {
+  if (v == null) return '#6f86a3';
+  const t = Math.max(0, Math.min(100, v)) / 100;
+  const stops = [[0,[233,86,86]],[0.5,[246,183,90]],[1,[54,211,154]]];
+  let a = stops[0], b = stops[2];
+  for (let i = 0; i < stops.length - 1; i++) {
+    if (t >= stops[i][0] && t <= stops[i+1][0]) { a = stops[i]; b = stops[i+1]; break; }
   }
+  const f = (t - a[0]) / ((b[0] - a[0]) || 1);
+  const c = a[1].map((x, i) => Math.round(x + (b[1][i] - x) * f));
+  return `rgb(${c[0]},${c[1]},${c[2]})`;
+}
+
+function fmtVotes(n) {
+  if (n >= 10000) return (n / 10000).toFixed(1).replace(/\.0$/, '') + '만';
+  if (n >= 1000)  return (n / 1000).toFixed(1).replace(/\.0$/, '') + '천';
+  return String(n);
+}
+
+export default function LeaderCard({ leader, onClick }) {
+  const { tName, getEval } = useApp();
+  const ev = getEval(leader.id);
+  const avg = leader.avg ?? 50;
 
   return (
-    <div
-      className={`ldr-card${featured ? ' featured' : ''}`}
-      onClick={onClick}
-      style={{ '--glow': glow }}
-    >
-      {badge === 'done'    && <div className="ldr-badge done">✓</div>}
-      {badge === 'lowest'  && <div className="ldr-badge lowest">!</div>}
-      {badge === 'highest' && <div className="ldr-badge highest">+</div>}
+    <div className="ldr-card-v" onClick={onClick}>
+      <div className="ldr-card-portrait">
+        <LeaderAvatar leader={leader} />
 
-      {/* 초상화 영역 — 국기 그라디언트 배경 */}
-      <div className="ldr-portrait-wrap" style={bgStyle}>
-        {portrait
-          ? <div className="ldr-portrait" dangerouslySetInnerHTML={{ __html: portrait }} />
-          : <div className="ldr-portrait-fallback">{leader.emoji}</div>
-        }
+        {/* 좌상단 국기 배지 */}
+        <FlagBadge id={leader.id} />
+
+        {/* 우상단 상태 배지 */}
+        <div className={`ldr-card-badge${ev ? ' done' : ' pending'}`}>
+          {ev ? `✓ ${ev.peace}점` : '미평가'}
+        </div>
       </div>
+      <div className="ldr-card-body">
+        <div className="ldr-card-name">{tName(leader.id)}</div>
+        <div className="ldr-card-sub">{leader.title}</div>
 
-      {/* 텍스트 + 버튼 래퍼 (가로형 레이아웃에서 우측 컬럼 역할) */}
-      <div className="ldr-content">
-        <div className="ldr-info">
-          <div className="ldr-name">{tName(leader.id)}</div>
-          <div className="ldr-country">{leader.country}</div>
-          {leader.chip && <div className="ldr-chip">{leader.chip}</div>}
-
-          {ev && (
-            <div className="ldr-scores">
-              <div className="ldr-score-row">
-                <span className="ldr-score-ico">🕊️</span>
-                <div className="ldr-score-track">
-                  <div className="ldr-score-fill peace" style={{ width: `${ev.peace}%` }} />
-                </div>
-                <span className="ldr-score-num peace">{ev.peace}</span>
-              </div>
-              <div className="ldr-score-row">
-                <span className="ldr-score-ico">🔥</span>
-                <div className="ldr-score-track">
-                  <div className="ldr-score-fill tension" style={{ width: `${ev.tension}%` }} />
-                </div>
-                <span className="ldr-score-num tension">{ev.tension}</span>
-              </div>
-            </div>
-          )}
+        <div className="ldr-card-avg-row">
+          <span className="ldr-card-avg-label">글로벌 평균</span>
+          <span className="ldr-card-avg-score" style={{ color: scoreColor(avg) }}>{avg}</span>
+          <span className="ldr-card-avg-denom">/100</span>
+        </div>
+        <div className="ldr-card-score-bar">
+          <div className="ldr-card-score-fill" style={{ width: `${avg}%`, background: scoreColor(avg) }} />
         </div>
 
-        <div className={`ldr-eval-btn${ev ? ' done' : ''}`}>
-          {ev ? '✓ 완료' : '평가하기'}
+        <div className="ldr-card-footer">
+          <span className="ldr-card-votes">{fmtVotes(leader.votes ?? 0)}명 참여</span>
+          {ev && <span className="ldr-card-my">내 평가 {ev.peace}점</span>}
         </div>
       </div>
     </div>
