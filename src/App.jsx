@@ -64,7 +64,7 @@ export default function App() {
       <main className="page">
         {tab === 'home' && <HomePage showToast={showToast} />}
         {tab === 'rx' && <PrescriptionPage showToast={showToast} />}
-        {tab === 'stats' && <StatsPage />}
+        {tab === 'stats' && <StatsPage showToast={showToast} />}
         {tab === 'profile' && <ProfilePage showToast={showToast} setTab={setTab} onTendency={() => setShowTendency(true)} />}
       </main>
 

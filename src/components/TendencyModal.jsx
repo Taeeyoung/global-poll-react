@@ -57,6 +57,25 @@ export default function TendencyModal({ onClose }) {
           </div>
         </div>
 
+        <div className="tend-sns-row">
+          <button className="tend-sns-btn kakao">
+            <span className="tend-sns-icon">💬</span>
+            <span className="tend-sns-label">카카오톡</span>
+          </button>
+          <button className="tend-sns-btn x">
+            <span className="tend-sns-icon">𝕏</span>
+            <span className="tend-sns-label">X</span>
+          </button>
+          <button className="tend-sns-btn insta">
+            <span className="tend-sns-icon">📷</span>
+            <span className="tend-sns-label">인스타</span>
+          </button>
+          <button className="tend-sns-btn link">
+            <span className="tend-sns-icon">🔗</span>
+            <span className="tend-sns-label">링크 복사</span>
+          </button>
+        </div>
+
         <button className="tend-share-btn" onClick={handleCopy}>
           {copied ? '✓ 클립보드에 복사되었습니다' : '📋 결과 클립보드 복사'}
         </button>

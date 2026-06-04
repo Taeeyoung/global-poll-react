@@ -81,7 +81,7 @@ export default function MediaShareModal({ ranked, onClose }) {
   return (
     <div className={`share-overlay${isOpen ? ' on' : ''}`} onClick={handleClose}>
       <div className="share-panel" onClick={e => e.stopPropagation()}>
-        <div className="share-handle" />
+        <button className="share-close" onClick={handleClose}>×</button>
         <div className="share-title">📧 결과를 언론사·기관에 보내기</div>
         <div className="share-sub">평가 결과를 이메일로 언론사·기관에 전달합니다.<br />클릭하면 이메일 앱이 열립니다.</div>
 

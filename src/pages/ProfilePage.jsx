@@ -1,10 +1,48 @@
+import { useState } from 'react';
 import { useApp } from '../context/AppContext.jsx';
 import { LEADERS } from '../data/leaders.js';
+
+function RequestLeaderModal({ onClose, showToast }) {
+  const [name, setName] = useState('');
+
+  const handleSubmit = () => {
+    const trimmed = name.trim();
+    if (!trimmed) return;
+    const saved = JSON.parse(localStorage.getItem('leaderRequests') || '[]');
+    localStorage.setItem('leaderRequests', JSON.stringify([...saved, trimmed]));
+    showToast('신청해주셔서 감사합니다! 🙏');
+    onClose();
+  };
+
+  return (
+    <div className="req-overlay" onClick={onClose}>
+      <div className="req-modal" onClick={e => e.stopPropagation()}>
+        <button className="req-close" onClick={onClose}>×</button>
+        <div className="req-title">🙋 지도자 신청</div>
+        <p className="req-desc">평가하고 싶은 지도자를 적어주세요!</p>
+        <input
+          className="req-input"
+          type="text"
+          placeholder="예: 볼로디미르 젤렌스키"
+          value={name}
+          onChange={e => setName(e.target.value)}
+          onKeyDown={e => e.key === 'Enter' && handleSubmit()}
+          autoFocus
+          maxLength={40}
+        />
+        <button className="req-submit" onClick={handleSubmit} disabled={!name.trim()}>
+          신청하기
+        </button>
+      </div>
+    </div>
+  );
+}
 
 const TOTAL = LEADERS.length;
 
 export default function ProfilePage({ showToast, setTab, onTendency }) {
   const { t, user, logout, getEval, clearAll } = useApp();
+  const [showRequest, setShowRequest] = useState(false);
 
   const doneCount = LEADERS.filter(l => !!getEval(l.id)).length;
   const canTendency = doneCount >= 3;
@@ -55,8 +93,13 @@ export default function ProfilePage({ showToast, setTab, onTendency }) {
         </p>
       )}
 
+      {/* 지도자 신청 */}
+      <button className="stats-request-btn" style={{ marginTop: 16, marginBottom: 0 }} onClick={() => setShowRequest(true)}>
+        🙋 추가되었으면 하는 지도자 신청
+      </button>
+
       {/* Menu */}
-      <div className="profile-menu" style={{ marginTop: 16 }}>
+      <div className="profile-menu" style={{ marginTop: 12 }}>
         <button className="profile-menu-item danger" onClick={handleReset}>
           <span className="profile-menu-icon">🗑️</span>
           <div className="profile-menu-text">
@@ -75,6 +118,10 @@ export default function ProfilePage({ showToast, setTab, onTendency }) {
           <span className="profile-menu-arrow">›</span>
         </button>
       </div>
+
+      {showRequest && (
+        <RequestLeaderModal onClose={() => setShowRequest(false)} showToast={showToast} />
+      )}
     </div>
   );
 }
